@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="./dom.js"></script>
+    <title>Test</title>
+    <style>
+    .red {
+        color: red;
+    }
+    .big {
+        font-size: 100px;
+    }
+    .bg {
+        background: pink;
+    }
+    </style>
+</head>
+<body>
+    <div class="parent">
+        <div id="child">
+
+            <h1>
+                <span></span>
+            </h1>
+            <ul id="ul">
+                <li class="li"></li>
+                <li class="li"></li>
+                <li class="li"></li>
+                <li class="li"></li>
+            </ul>
+        </div>
+    </div>
+    <input type="button" value="toggle">
+    <h1 id="ul"></h1>
+    <script type="text/javascript">
+        window.onload = function() {
+            var li = document.createElement('li');
+            li.innerHTML = 'hello li';
+            var ali = create('li');
+            ali.innerHTML = 'new li';
+            appendStart(li,$('#ul'));
+            addClass('red bg',li)
+            print(hasClass('bg',li))
+            print(hasClass('red',li))
+            print(hasClass('redd',li))
+        }
+    </script>
+</body>
+</html>
