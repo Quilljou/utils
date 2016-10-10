@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="./dom.js"></script>
+    <script src="./utils.js"></script>
     <title>Test</title>
     <style>
     .red {
@@ -42,10 +42,11 @@
             var ali = create('li');
             ali.innerHTML = 'new li';
             appendStart(li,$('#ul'));
-            addClass('red bg',li)
-            print(hasClass('bg',li))
-            print(hasClass('red',li))
-            print(hasClass('redd',li))
+            li.style.color = 'tan'
+
+            var styles = "background-color: pink;font-size : 50px";
+            setStyle(styles,li)
+
         }
     </script>
 </body>

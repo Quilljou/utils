@@ -1,4 +1,6 @@
 var ArrayProto = Array.prototype;
+var body = document.body;
+var html = document.documentElement;
 
 // Find
 // slector 可能的值   字符串:id,class,tag
@@ -65,7 +67,7 @@ function checkSelector(selector,parent) {
         throw new Error('if parent,parent must be element node or string!')
     }
 
-    return {selector,parent}
+    return {selector:selector,parent:parent}
 }
 
 function query(selector,parent) {
@@ -224,6 +226,11 @@ function hasClass(nameOfClass,selector) {
     return regex.test(element.className) ? true : false;
 }
 
+function innerText(selector, text) {
+    var element = covertToElement(selector);
+    return typeof element.textContent == 'string' ? element.textContent : element.innerText;
+}
+
 function style() {
 
 }
@@ -234,3 +241,54 @@ function print(stuff) {
 }
 
 // 取得对整个页面的offset
+
+
+
+
+
+
+
+
+
+function addStyle(rule, selector) {
+    var element = covertToElement(selector);
+    if ("object" == typeof rule)
+        for (var r in rule) {
+            element.style[r] = rule[r];
+        }
+    else {
+        if ("string" != typeof rule) {
+            throw new Errow("css rules must be object or string");
+        }else {
+            element.style.cssText += (element.style.cssText ? ";" : "") + rule;
+        }
+    }
+}
+
+function removeStyle(rule, selector) {
+    var element = covertToElement(selector);
+    if ("string" != typeof rule) {
+        throw new Error("rules must be String!");
+    }
+    var regex = new RegExp("\\b" + rule + "\\b");
+    if(regex.test(element.style.cssText)) {
+
+    }
+}
+
+function toggleStyle() {}
+
+function getStyle(rule, selector) {
+    var element = covertToElement(selector);
+    return element.style[rule]
+}
+
+function css() {}
+
+function attr() {}
+
+function removeAttr(e, t) {}
+
+function print(any) {
+    console.log(any)
+}
