@@ -292,3 +292,4 @@ function removeAttr(e, t) {}
 function print(any) {
     console.log(any)
 }
+// test
