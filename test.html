@@ -7,47 +7,72 @@
     <script src="./utils.js"></script>
     <title>Test</title>
     <style>
-    .red {
-        color: red;
+    .parent {
+        width: 500px;
+       height: 300px;
+       padding: 10px;
+       background: pink;
     }
-    .big {
-        font-size: 100px;
+    .child {
+        width: 100px;
+        height: 100px;
+        background: tan;
+        padding: 10px;
     }
-    .bg {
-        background: pink;
+    .grandchild {
+        width: 100px;
+        height: 3000px;
+        background: #fff;
+        margin: 10px;
+        padding: 5px;
+        border: 10px deeppink solid;
+        overflow: scroll;
     }
     </style>
 </head>
 <body>
+    <input type="button">
     <div class="parent">
-        <div id="child">
-
-            <h1>
-                <span></span>
-            </h1>
-            <ul id="ul">
-                <li class="li"></li>
-                <li class="li"></li>
-                <li class="li"></li>
-                <li class="li"></li>
-            </ul>
+        <div class="child">
+            <div class="grandchild">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia ratione culpa, minus delectus aliquam, iusto harum neque, quae reprehenderit suscipit amet. Odio, laudantium, qui. Possimus perspiciatis ducimus commodi aliquam temporibus!
+            </div>
         </div>
     </div>
-    <input type="button" value="toggle">
-    <h1 id="ul"></h1>
     <script type="text/javascript">
-        window.onload = function() {
-            var li = document.createElement('li');
-            li.innerHTML = 'hello li';
-            var ali = create('li');
-            ali.innerHTML = 'new li';
-            appendStart(li,$('#ul'));
-            li.style.color = 'tan'
+    console.log(U);
+    U.on($('input'),'click',sayhi);
+    function sayhi(){
+        alert('hi')
+        U.off($('input'),'click',sayhi);
+    }
 
-            var styles = "background-color: pink;font-size : 50px";
-            setStyle(styles,li)
+    U.on($('div'),'click',say);
+    function say(){
+        alert('helo')
+        U.off($('div'),'click',say);
+    }
 
-        }
+
+        print(pageOffset('.grandchild'));
+        print('client' + $('.grandchild').clientWidth);
+        print('computed' + computed('.grandchild').width);
+        print('offset' + $('.grandchild').offsetWidth);
+        // print(computed('.grandchild').in);
+
+        var body = document.body;
+        var html = document.documentElement;
+        print('...body...')
+        console.log('......offset');
+        print(body.offsetWidth)
+        print(body.offsetHeight)
+        console.log('......scroll');
+        print(body.scrollWidth)
+        print(body.scrollHeight)
+        print('...html...')
+        print(html.offsetWidth)
+        print(html.offsetHeight)
+        print('...body...')
     </script>
 </body>
 </html>

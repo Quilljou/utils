@@ -8,6 +8,12 @@ var html = document.documentElement;
 // https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementById
 // If you use getElementById().you must use document to the root element.
 
+(function() {
+    'use strict'
+
+
+
+})()
 function $(selector,parent) {
     if(typeof selector !== 'string') { return null }
     else { selector = selector.trim() };
@@ -243,53 +249,253 @@ function print(stuff) {
 // 取得对整个页面的offset
 
 
-
-
-
-
-
-
-
-function addStyle(rule, selector) {
-    var element = covertToElement(selector);
-    if ("object" == typeof rule)
-        for (var r in rule) {
-            element.style[r] = rule[r];
+function pageOffset(selector){
+    var element = covertToElement(selector)
+    var getLeft = function(element) {
+        var temp = element.offsetLeft;
+        var currentElement = element.offsetParent;
+        while(currentElement !== null){
+            temp += currentElement.offsetLeft;
+            currentElement = currentElement.offsetParent;
         }
-    else {
-        if ("string" != typeof rule) {
-            throw new Errow("css rules must be object or string");
-        }else {
-            element.style.cssText += (element.style.cssText ? ";" : "") + rule;
+        return temp;
+    }
+    var getTop = function(element) {
+        var temp = element.offsetTop;
+        var currentElement = element.offsetParent;
+        while(currentElement !== null){
+            temp += currentElement.offsetTop;
+            currentElement = currentElement.offsetParent;
         }
+        return temp;
+    }
+    return {
+        top: getTop(element),
+        left: getLeft(element)
     }
 }
 
-function removeStyle(rule, selector) {
+
+function size(){
+
+}
+
+
+
+function addStyle(rules, selector) {
     var element = covertToElement(selector);
-    if ("string" != typeof rule) {
+
+    if(typeof rules === 'object') {
+        for (var r in rules) {
+            element.style[r] = rules[r];
+        }
+    }else if (typeof rules === 'string') {
+        rules = rules.trim();
+        if(rules.charAt(rules.length - 1 ) == ';') {
+            rules = rules.substring(0,rules.length-1)
+        }
+        var arr = rules.split(';');
+        for(var i = 0; i < arr.length; i++) {
+            element.style.setProperty(arr[i].split(':')[0],arr[i].split(':')[1]);
+        }
+    }else {
+        throw new Errow("css rules must be object or string");
+    }
+}
+
+function removeStyle(rules, selector) {
+    var element = covertToElement(selector);
+    if ("string" != typeof rules) {
         throw new Error("rules must be String!");
     }
-    var regex = new RegExp("\\b" + rule + "\\b");
-    if(regex.test(element.style.cssText)) {
 
+    rules = rules.trim();
+
+    if(rules.indexOf(':') === -1) {
+        //多个属性
+        var arr = rules.split(' ');
+        for(var i = 0; i < arr.length; i++) {
+            var regex = new RegExp("\\b" + arr[i] + "\\b");
+            if(regex.test(element.style.cssText)) {
+                element.style.removeProperty(arr[i]);
+            }else {
+                throw new Error('the rules '+ arr[i]+ ' to be removed is not existed')
+            }
+        }
+    }else {
+        // 如果是cssText 字符串,配合toggleStyle
+        var arr = rules.split(';');
+        arr = arr.map(function(item,index){
+            return item.split(':');
+        })
+        for(var i = 0; i < arr.length; i++) {
+            var regex = new RegExp("\\b" + arr[i][0] + "\\b");
+            if(regex.test(element.style.cssText)) {
+                element.style.removeProperty(arr[i][0]);
+            }else {
+                throw new Error('the rules '+ arr[i][0]+ ' to be removed is not existed')
+            }
+        }
+    }
+
+}
+
+function toggleStyle(rules,selector) {
+    var element = covertToElement(selector);
+    if ("string" != typeof rules) {
+        throw new Error("rules must be String!");
+    }else {
+        rules = rules.trim();
+        if(rules.charAt(rules.length - 1 ) == ';') {
+            rules = rules.substring(0,rules.length-1)
+        }
+        var arr = rules.split(';');
+        var regex = new RegExp("\\b" + arr[0].split(':')[0] + "\\b");
+        if(regex.test(element.style.cssText)) {
+            removeStyle(rules,element);
+            return;
+        }else {
+            addStyle(rules,element);
+            return;
+        }
     }
 }
 
-function toggleStyle() {}
 
-function getStyle(rule, selector) {
-    var element = covertToElement(selector);
-    return element.style[rule]
+function computed(selector,pseudo) {
+    // not fit for width,height because padding,margin
+    var element = covertToElement(selector),
+        computedStyle = null;
+
+        if(typeof pseudo === 'undefined') {
+            pseudo = null;
+        }
+
+        if(window.getComputedStyle) {
+            computedStyle = window.getComputedStyle(element,pseudo);
+        }else if (element.currentStyle) {
+            // 兼容IE
+            computedStyle = element.currentStyle;
+        }
+
+        return computedStyle;
 }
 
-function css() {}
+function getStyle(rules, selector) {
+    var element = covertToElement(selector);
+    return element.style[rules]
+}
 
-function attr() {}
 
-function removeAttr(e, t) {}
+function show(selector) {
+    var element = covertToElement(selector);
+    removeStyle('display',element);
+}
+
+function hide(selector) {
+    var element = covertToElement(selector);
+    addStyle({display:'none'},element);
+}
+
+function toggle(selector){
+    var element = covertToElement(selector);
+    if(element.style.display) {
+        element.style.display==='none'?show(element):hide(element);
+    }else {
+        hide(element);
+    }
+}
 
 function print(any) {
     console.log(any)
 }
-// test
+
+// size
+// scrollbar will cut the computed width
+// that means it not a part of padding or margin, it just cut some place for itself
+function size(selector,scroll) {
+    var element = covertToElement(selector);
+    if(scroll) {
+
+    }else {
+
+    }
+
+
+}
+
+// var scroller = body and html
+
+/*
+pageX
+pageY
+pageX
+scrollY
+scrollX
+screenX
+screenY
+clientWidth
+clientHeight
+innerWidth
+innerHeight
+scrollWidth
+scrollHeight
+scrollTop
+scrollLeft
+offsetWidth
+offsetHeight
+offsetTop
+offsetLeft
+*/
+
+
+
+    var U = {
+        on: null,
+        off: null,
+        init: function()
+        {
+            if(typeof window.addEventListener === 'function')
+            {
+                this.on = function(element,type,handler)
+                {
+                    element.addEventListener(type,handler);
+                }
+                this.off = function(element,type,handler){
+                    element.removeEventListener(type,handler);
+                }
+            }else if (typeof window.attachEvent === 'function')
+            {
+                this.on = function(element,type,handler)
+                {
+                    element.attachEvent('on'+type,handler);
+                }
+                this.off = function(element,type,handler) {
+                    element.detachEvent('on'+type,handler);
+                }
+            }else {
+                this.on = function(element,type,handler)
+                {
+                    element['on'+type] = handler;
+                }
+                this.off = function(element,type,handler)
+                {
+                    element['on'+type] = null;
+                }
+            }
+            return this;
+        },
+        getKey: function(event){
+            if(typeof event.keyCode === 'number') {
+                return event.keyCode;
+            }else {
+                return event.charCode;
+            }
+        }
+    }.init()
+
+
+function serialize(form) {
+    var parts = [];
+
+}
