@@ -423,6 +423,100 @@ function size(selector,scroll) {
 
 
 }
+function timeAgo(time) {
+    var diff; // s
+    var before = '前';
+    var period = ['秒','分钟','小时','天','月','年'];
+    var second = [1, 60, 60*60, 60*60*24, 60*60*24*30, 60*60*24*30*12];
+
+    switch (typeof time) {
+        case 'number':
+            diff = Math.floor((Date.now() - time) / 1000);
+        case 'object':
+        case 'string':
+            diff = Math.floor((Date.now() - ((new Date(time)).getTime())) / 1000);
+            break;
+        default:
+            return;
+            break;
+    }
+    console.log(diff);
+
+    for(var i =  period.length; i  > 0; i--) {
+        if(diff > second[i]) {
+            return concat(i);;
+        }
+    }
+
+    function concat(i) {
+        var num = Math.floor(diff / second[i]);
+        var result =  num + period[i] + before;
+        return result;
+    }
+
+}
+
+
+function getNow(opt) {
+    var result = '';
+    var opt = opt || {};
+    var option = {
+        time: opt.time || true,
+        date: opt.date || true,
+        dateFormat: opt.format || 'y-m-d',
+        timeFormat: opt.format || 'h:m'
+    }
+
+    var now = new Date();
+
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1;
+    var date = now.getDate();
+    var hour = now.getHours();
+    var minute = now.getMinutes();
+    var second = now.getSeconds();
+
+    var dateSign = {
+        'y': year,
+        'm': month,
+        'd': date
+    };
+
+    var timeSign = {
+        'h': hour,
+        'm': minute,
+        's': second
+    };
+
+    if(option.date) {
+        result += extendStr(option.dateFormat,dateSign);
+    }
+
+
+    if(option.time) {
+        result += ' ' + extendStr(option.timeFormat,timeSign);
+    }
+
+
+    function extendStr(str,obj) {
+        var arr = str.split('');
+        var objArr = Object.keys(obj);
+        for (var i = 0; i < arr.length; i++) {
+            for (var j = 0; j < objArr.length; j++) {
+                if(objArr[j] === arr[i]) {
+                    arr[i] = obj[objArr[j]];
+                }
+            }
+        }
+        return arr.join('');
+    }
+
+    return result;
+
+}
+
+
+
 
 // var scroller = body and html
 
