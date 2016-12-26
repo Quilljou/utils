@@ -458,11 +458,10 @@ function timeAgo(time) {
 
 
 function getNow(opt) {
-    var result = '';
     var opt = opt || {};
     var option = {
-        time: opt.time || true,
-        date: opt.date || true,
+        time: opt.time || opt.time && true,
+        date: opt.date || opt.date && true,
         dateFormat: opt.format || 'y-m-d',
         timeFormat: opt.format || 'h:m'
     }
@@ -488,15 +487,17 @@ function getNow(opt) {
         's': second
     };
 
-    if(option.date) {
-        result += extendStr(option.dateFormat,dateSign);
+    var getDate = extendStr(option.dateFormat,dateSign);
+    var getTime = extendStr(option.timeFormat,timeSign);
+
+
+    if(option.date && option.time || (!option.date && !option.time) ) {
+        return getDate + ' ' + getTime;
+    }else if(option.date && !option.time){
+        return getDate;
+    }else {
+        return getTime;
     }
-
-
-    if(option.time) {
-        result += ' ' + extendStr(option.timeFormat,timeSign);
-    }
-
 
     function extendStr(str,obj) {
         var arr = str.split('');
@@ -510,9 +511,6 @@ function getNow(opt) {
         }
         return arr.join('');
     }
-
-    return result;
-
 }
 
 
